@@ -15,17 +15,31 @@ object NatNumbers {
     /**
       * [[scalaz.Functor]] instance for our structure
       */
-    implicit val natFunctor = TODO
+    implicit val natFunctor = new Functor[Nat] {
+      def map[A, B](fa: Nat[A])(f: A => B): Nat[B] = fa match {
+        case Succ(previous) => Succ(f(previous))
+        case Zero() => Zero()
+      }
+    }
 
     /**
       * Algebra: Nat[Int] => Int
       */
-    def natToIntAlg: Algebra[Nat, Int] = TODO
+    def natToIntAlg: Algebra[Nat, Int] = {
+      case Succ(previous) => 1 + previous
+      case Zero() => 0
+    }
     /**
       * CoAlgebra: Int => Nat[Int]
       */
-    def intToNatCoAlg: Coalgebra[Nat, Int] = TODO
-    def natToStringAlg: Algebra[Nat, String] = TODO
+    def intToNatCoAlg: Coalgebra[Nat, Int] = (n:Int) => n match {
+      case 0 => Zero()
+      case _ => Succ(n-1)
+    }
+    def natToStringAlg: Algebra[Nat, String] = {
+      case Succ(previous) => s"Succ($previous)"
+      case Zero() => "0"
+    }
 
     /**
       * Recursive.Aux[T, Nat] : Another way to `collapse` our structure

@@ -26,11 +26,21 @@ object Trees {
     /**
       * [[scalaz.Functor]] instance for our structure
       */
-    implicit val treeFunctor =  TODO
+    implicit val treeFunctor =  new Functor[TreeF] {
+      def map[A, B](fa: TreeF[A])(f: A => B): TreeF[B] = fa match {
+        case BranchF(v, v1, v2) => BranchF(v, f(v1), f(v2))
+        case LeafF(v) => LeafF(v)
+        case EmptyF() => EmptyF()
+      }
+    }
     /**
       * Algebra: Tree[Int] => Int
       */
-    def treeAlg: Algebra[TreeF, Int] = TODO
+    def treeAlg: Algebra[TreeF, Int] = {
+      case BranchF(v, v1, v2) => v1 + v + v2
+      case LeafF(v) => v
+      case EmptyF() => 0
+  }
     /**
       * CoAlgebra: Int => Tree[Int]
       */
